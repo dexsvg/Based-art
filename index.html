@@ -89,6 +89,7 @@
 <body>
     <div class="container">
         
+        <!-- HEADER UTAMA & AUDIT BADGES -->
         <div class="header">
             <h1>Based Art ($BART)</h1>
             <p>Decentralized Real-Time Pixel War Protocol</p>
@@ -100,6 +101,7 @@
             </div>
         </div>
 
+        <!-- DASHBOARD LIVE STATS -->
         <div class="stats-grid">
             <div class="stat-box">
                 <div class="stat-val">4,821 / 10,000</div>
@@ -111,11 +113,13 @@
             </div>
         </div>
 
+        <!-- AUTHENTICATION CARD -->
         <div class="card" style="text-align: center;">
             <button class="btn" id="btnConnect">🔌 Connect Web3 Wallet</button>
             <p style="font-size: 8.5pt; color: #6b7280; margin-top: 10px;">Menggunakan protokol aman standar ERC-20 & ERC-721</p>
         </div>
 
+        <!-- AKUMULASI CLAIM HARIAN (STREAK SYSTEM) -->
         <div class="card">
             <h2>📆 Multi-Day Incentive System</h2>
             <div class="card-desc">
@@ -126,11 +130,11 @@
             <div class="streak-board">
                 <div style="display: flex; justify-content: space-between; font-size: 9pt;">
                     <span>Sesi Berjalan: <b id="streakCount" style="color: #00e676;">Hari ke-1</b></span>
-                    <span>Total Hadiah: <b id="accumulatedPoints" style="color: #0052ff;">5 BART</b></span>
+                    <span>Total Hadiah: <b id="accumulatedPoints" style="color: #0052ff;">0 BART</b></span>
                 </div>
                 <div class="streak-grid">
-                    <div class="streak-day passed" id="sd-1">H-1</div>
-                    <div class="streak-day current" id="sd-2">H-2</div>
+                    <div class="streak-day" id="sd-1">H-1</div>
+                    <div class="streak-day" id="sd-2">H-2</div>
                     <div class="streak-day" id="sd-3">H-3</div>
                     <div class="streak-day" id="sd-4">H-4</div>
                     <div class="streak-day" id="sd-5">H-5</div>
@@ -142,6 +146,7 @@
             <button class="btn btn-secondary" id="btnClaimDaily">🎁 Execute Daily Accumulation</button>
         </div>
 
+        <!-- INTERACTIVE LIVE CANVAS VIEW -->
         <div class="card">
             <h2>🎨 Real-Time Pixel Grid Canvas (10x10 Matrix)</h2>
             <div class="card-desc">Peta matriks visual kanvas global. Klik pada koordinat piksel pilihan Anda untuk membaca data registrasi indeks alamat dompet pintar secara langsung.</div>
@@ -159,6 +164,7 @@
             </div>
         </div>
 
+        <!-- TRANSACTION GATEWAY FORM -->
         <div class="card">
             <h2>⚔️ On-Chain Execution Layer</h2>
             <div class="card-desc">Kirim instruksi penimpaan kepemilikan aset piksel. Transaksi ini membutuhkan validasi tanda tangan kriptografi via wallet Anda.</div>
@@ -174,12 +180,13 @@
             </div>
             <div class="form-group">
                 <label>Penawaran Nilai Gas Warna (Price in Wei)</label>
-                <input type="number" placeholder="Contoh: 100000000000000">
+                <input type="number" id="gasValueInput" placeholder="Contoh: 100000000000000">
                 <small style="font-size: 8pt; color: #6b7280; display: block; margin-top: 5px;">*Wajib lebih tinggi dari penawaran kepemilikan pemilik piksel sebelumnya.</small>
             </div>
             <button class="btn" id="btnExecute">⚡ Execute Stroke & Mint Territory</button>
         </div>
 
+        <!-- LIVE ACTIVITIES FEED -->
         <div class="card">
             <h2>🔔 Live Protocol Activity Log</h2>
             <div class="card-desc">Aktivitas penandatanganan transaksi on-chain global secara real-time.</div>
@@ -195,6 +202,7 @@
             </div>
         </div>
 
+        <!-- LEADERBOARD FACTION -->
         <div class="card">
             <h2>🏆 Top Canvas Conquerors</h2>
             <div class="leaderboard-list">
@@ -204,6 +212,7 @@
             </div>
         </div>
 
+        <!-- HIGH-LEVEL PROJECT ROADMAP -->
         <div class="card">
             <h2>🗺️ Protocol Roadmap & Milestones</h2>
             <div class="roadmap-item">
@@ -213,6 +222,7 @@
             </div>
         </div>
 
+        <!-- FOOTER LEGALITY -->
         <div class="footer">
             <p>&copy; 2026 Based Art ($BART) Protocol. Formulated via GitHub Clean Node Jf.</p>
         </div>
@@ -251,7 +261,7 @@
         });
 
         // ========================================================
-        // LOGIKA COOLDOWN 24 JAM ASLI (FORMAT WAKTU REAL-TIME)
+        // PERBAIKAN LOGIKA DAILY COOLDOWN & STREAK SYSTEM
         // ========================================================
         function checkDailyCooldown() {
             const lastClaim = localStorage.getItem('bart_last_claim_time');
@@ -264,50 +274,75 @@
             document.getElementById('streakCount').innerText = `Hari ke-${currentDayStreak}`;
             document.getElementById('accumulatedPoints').innerText = `${currentPoints} BART`;
             
-            for(let d = 1; d < currentDayStreak; d++) {
-                const passedBox = document.getElementById(`sd-${d}`);
-                if(passedBox) passedBox.classList.add('passed');
+            // Atur highlight indikator visual grid hari
+            document.querySelectorAll('.streak-day').forEach(d => d.classList.remove('passed', 'current'));
+            for(let d = 1; d <= 7; d++) {
+                const dayBox = document.getElementById(`sd-${d}`);
+                if(dayBox) {
+                    if (d < currentDayStreak) {
+                        dayBox.classList.add('passed');
+                    } else if (d === currentDayStreak) {
+                        dayBox.classList.add('current');
+                    }
+                }
+            }
+
+            if (currentDayStreak > 7) {
+                dailyBtn.innerText = "❌ Sesi Batas Klaim Maksimal Tercapai";
+                dailyBtn.disabled = true;
+                return;
             }
 
             if (lastClaim) {
                 const now = new Date().getTime();
                 const timePassed = now - parseInt(lastClaim);
-                const cooldownTime = 24 * 60 * 60 * 1000; 
+                const cooldownTime = 24 * 60 * 60 * 1000; // 24 Jam
 
                 if (timePassed < cooldownTime) {
-                    dailyBtn.disabled = true;
                     startCooldownTimer(cooldownTime - timePassed);
-                    return true;
+                } else {
+                    resetButtonToActive();
                 }
+            } else {
+                resetButtonToActive();
             }
-            return false;
         }
 
-        function startCooldownTimer(duration) {
-            let timer = duration;
-            const interval = setInterval(function () {
-                const hours = Math.floor((timer % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((timer % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((timer % (1000 * 60)) / 1000);
+        function startCooldownTimer(remainingTime) {
+            dailyBtn.disabled = true;
+            dailyBtn.style.background = '#222431';
+            dailyBtn.style.color = '#71717a';
+            
+            // Gunakan interval unik yang langsung di-clear jika waktu habis
+            if (window.cooldownInterval) clearInterval(window.cooldownInterval);
 
-                dailyBtn.disabled = true;
-                dailyBtn.innerText = `⏳ Cooldown: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                dailyBtn.style.background = '#222431';
-                dailyBtn.style.color = '#71717a';
-
-                timer -= 1000;
-
-                if (timer < 0) {
-                    clearInterval(interval);
-                    dailyBtn.disabled = false;
-                    dailyBtn.innerText = "🎁 Execute Daily Accumulation";
-                    dailyBtn.style.background = '#1c1e29';
-                    dailyBtn.style.color = '#fff';
+            window.cooldownInterval = setInterval(function () {
+                if (remainingTime <= 0) {
+                    clearInterval(window.cooldownInterval);
+                    resetButtonToActive();
+                    return;
                 }
+                const hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+                dailyBtn.innerText = `⏳ Cooldown: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                remainingTime -= 1000;
             }, 1000);
         }
 
-        dailyBtn.addEventListener('click', function() {
+        function resetButtonToActive() {
+            dailyBtn.disabled = false;
+            dailyBtn.innerText = "🎁 Execute Daily Accumulation";
+            dailyBtn.style.background = '#1c1e29';
+            dailyBtn.style.color = '#fff';
+        }
+
+        // Event Listener Klaim Harian
+        dailyBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (dailyBtn.disabled) return;
+
             if (currentDayStreak <= 7) {
                 const rewardIncentive = currentDayStreak * 5; 
                 currentPoints += rewardIncentive;
@@ -315,41 +350,17 @@
                 localStorage.setItem('bart_last_claim_time', new Date().getTime().toString());
                 localStorage.setItem('bart_total_points', currentPoints);
                 
-                document.getElementById('accumulatedPoints').innerText = `${currentPoints} BART`;
-                
-                const currentBox = document.getElementById(`sd-${currentDayStreak}`);
-                if (currentBox) currentBox.classList.add('passed');
-                
                 currentDayStreak++;
                 localStorage.setItem('bart_current_streak', currentDayStreak);
                 
-                if(currentDayStreak > 7) {
-                    dailyBtn.innerText = "❌ Sesi Batas Klaim Maksimal Tercapai";
-                    dailyBtn.disabled = true;
-                    return;
-                }
-
-                document.getElementById('streakCount').innerText = `Hari ke-${currentDayStreak}`;
                 checkDailyCooldown();
             }
         });
 
+        // Jalankan pengecekan pertama saat load halaman
         checkDailyCooldown();
 
         // ========================================================
-        // SINKRONISASI KONEKSI WALLET
+        // SINKRONISASI KONEKSI WALLET (FIXED REDIRECT & CONNECT)
         // ========================================================
-        document.getElementById('btnConnect').addEventListener('click', async function() {
-            if (typeof window.ethereum !== 'undefined') {
-                try {
-                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                    const userWallet = accounts[0];
-                    
-                    document.getElementById('btnConnect').innerText = `Connected: ${userWallet.substring(0, 6)}...${userWallet.substring(userWallet.length - 4)}`;
-                    document.getElementById('btnConnect').style.background = '#00e676';
-                    document.getElementById('btnConnect').style.color = '#000';
-                } catch (error) {
-                    console.log('Koneksi dibatalkan.');
-                }
-            } else {
-                window.location.href = "https://metamask.app.link/dapp/" + window.location.host + window.
+        const

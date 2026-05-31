@@ -58,9 +58,9 @@
         
         .btn { display: block; width: 100%; background: #0052ff; color: white; border: none; border-radius: 10px; padding: 15px; font-size: 11pt; font-weight: 600; text-align: center; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 12px rgba(0,82,255,0.15); }
         .btn:active { background: #0040cc; transform: scale(0.98); }
-        .btn-secondary { background: #1c1e29; border: 1px solid #282a36; color: #fff; }
+        .btn-secondary { display: block; width: 100%; background: #1c1e29; border: 1px solid #282a36; color: #fff; border-radius: 10px; padding: 15px; font-size: 11pt; font-weight: 600; text-align: center; cursor: pointer; transition: 0.2s; }
         
-        /* Verified Smart Contract Widget dengan Alamat Kontrak Aslimu */
+        /* Verified Smart Contract Widget */
         .contract-widget { background: #181922; border: 1px solid #282a36; padding: 10px 14px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 8.5pt; margin-bottom: 15px; }
         .contract-addr { color: #00e676; font-family: monospace; }
 
@@ -89,7 +89,6 @@
 <body>
     <div class="container">
         
-        <!-- HEADER UTAMA & AUDIT BADGES -->
         <div class="header">
             <h1>Based Art ($BART)</h1>
             <p>Decentralized Real-Time Pixel War Protocol</p>
@@ -101,7 +100,6 @@
             </div>
         </div>
 
-        <!-- DASHBOARD LIVE STATS -->
         <div class="stats-grid">
             <div class="stat-box">
                 <div class="stat-val">4,821 / 10,000</div>
@@ -113,13 +111,11 @@
             </div>
         </div>
 
-        <!-- AUTHENTICATION CARD -->
         <div class="card" style="text-align: center;">
             <button class="btn" id="btnConnect">🔌 Connect Web3 Wallet</button>
             <p style="font-size: 8.5pt; color: #6b7280; margin-top: 10px;">Menggunakan protokol aman standar ERC-20 & ERC-721</p>
         </div>
 
-        <!-- AKUMULASI CLAIM HARIAN (STREAK SYSTEM) -->
         <div class="card">
             <h2>📆 Multi-Day Incentive System</h2>
             <div class="card-desc">
@@ -133,7 +129,7 @@
                     <span>Total Hadiah: <b id="accumulatedPoints" style="color: #0052ff;">5 BART</b></span>
                 </div>
                 <div class="streak-grid">
-                    <div class="streak-day passed">H-1</div>
+                    <div class="streak-day passed" id="sd-1">H-1</div>
                     <div class="streak-day current" id="sd-2">H-2</div>
                     <div class="streak-day" id="sd-3">H-3</div>
                     <div class="streak-day" id="sd-4">H-4</div>
@@ -146,7 +142,6 @@
             <button class="btn btn-secondary" id="btnClaimDaily">🎁 Execute Daily Accumulation</button>
         </div>
 
-        <!-- INTERACTIVE LIVE CANVAS VIEW -->
         <div class="card">
             <h2>🎨 Real-Time Pixel Grid Canvas (10x10 Matrix)</h2>
             <div class="card-desc">Peta matriks visual kanvas global. Klik pada koordinat piksel pilihan Anda untuk membaca data registrasi indeks alamat dompet pintar secara langsung.</div>
@@ -164,12 +159,10 @@
             </div>
         </div>
 
-        <!-- TRANSACTION GATEWAY FORM -->
         <div class="card">
             <h2>⚔️ On-Chain Execution Layer</h2>
             <div class="card-desc">Kirim instruksi penimpaan kepemilikan aset piksel. Transaksi ini membutuhkan validasi tanda tangan kriptografi via wallet Anda.</div>
             
-            <!-- ALAMAT KONTRAK ASLI KELUAR DI SINI -->
             <div class="contract-widget">
                 <span>📄 Smart Contract (Base):</span>
                 <span class="contract-addr" title="0x263043098927A76cA8370363F6B815f34E716851">0x2630...6851</span>
@@ -187,7 +180,6 @@
             <button class="btn" id="btnExecute">⚡ Execute Stroke & Mint Territory</button>
         </div>
 
-        <!-- LIVE LIVE ACTIVITIES FEED -->
         <div class="card">
             <h2>🔔 Live Protocol Activity Log</h2>
             <div class="card-desc">Aktivitas penandatanganan transaksi on-chain global secara real-time.</div>
@@ -203,7 +195,6 @@
             </div>
         </div>
 
-        <!-- LEADERBOARD FACTION -->
         <div class="card">
             <h2>🏆 Top Canvas Conquerors</h2>
             <div class="leaderboard-list">
@@ -213,7 +204,6 @@
             </div>
         </div>
 
-        <!-- HIGH-LEVEL PROJECT ROADMAP -->
         <div class="card">
             <h2>🗺️ Protocol Roadmap & Milestones</h2>
             <div class="roadmap-item">
@@ -223,13 +213,11 @@
             </div>
         </div>
 
-        <!-- FOOTER LEGALITY -->
         <div class="footer">
             <p>&copy; 2026 Based Art ($BART) Protocol. Formulated via GitHub Clean Node Jf.</p>
         </div>
     </div>
 
-    <!-- LOGIKA SKRIP BARU: ANTI-SPAM & 24 JAM COOLDOWN -->
     <script>
         let activeColor = '#ff0055';
         let currentDayStreak = 1; 
@@ -239,7 +227,7 @@
         const inputId = document.getElementById('pixelIdInput');
         const dailyBtn = document.getElementById('btnClaimDaily');
 
-        // Render 100 Pixel Grid visual secara aman
+        // Render 100 Pixel Grid
         for (let i = 1; i <= 100; i++) {
             const pixel = document.createElement('div');
             pixel.className = 'pixel';
@@ -253,7 +241,7 @@
             grid.appendChild(pixel);
         }
 
-        // Handler Filter Pilihan Warna
+        // Color Picker Logic
         document.querySelectorAll('.color-dot').forEach(dot => {
             dot.addEventListener('click', function() {
                 document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
@@ -284,7 +272,7 @@
             if (lastClaim) {
                 const now = new Date().getTime();
                 const timePassed = now - parseInt(lastClaim);
-                const cooldownTime = 24 * 60 * 60 * 1000; // 24 Jam dalam milidetik
+                const cooldownTime = 24 * 60 * 60 * 1000; 
 
                 if (timePassed < cooldownTime) {
                     dailyBtn.disabled = true;
@@ -302,7 +290,7 @@
                 const minutes = Math.floor((timer % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((timer % (1000 * 60)) / 1000);
 
-                // Mengunci tombol dan memicu penghitung waktu mundur mundur digital
+                dailyBtn.disabled = true;
                 dailyBtn.innerText = `⏳ Cooldown: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                 dailyBtn.style.background = '#222431';
                 dailyBtn.style.color = '#71717a';
@@ -349,7 +337,7 @@
         checkDailyCooldown();
 
         // ========================================================
-        // SINKRONISASI KONEKSI WALLET (REAL-TIME TANPA ALERT POP-UP)
+        // SINKRONISASI KONEKSI WALLET
         // ========================================================
         document.getElementById('btnConnect').addEventListener('click', async function() {
             if (typeof window.ethereum !== 'undefined') {
@@ -357,4 +345,11 @@
                     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
                     const userWallet = accounts[0];
                     
-                    document.getElem
+                    document.getElementById('btnConnect').innerText = `Connected: ${userWallet.substring(0, 6)}...${userWallet.substring(userWallet.length - 4)}`;
+                    document.getElementById('btnConnect').style.background = '#00e676';
+                    document.getElementById('btnConnect').style.color = '#000';
+                } catch (error) {
+                    console.log('Koneksi dibatalkan.');
+                }
+            } else {
+                window.location.href = "https://metamask.app.link/dapp/" + window.location.host + window.

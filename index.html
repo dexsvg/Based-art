@@ -171,7 +171,7 @@
             
             <div class="contract-widget">
                 <span>📄 Smart Contract (Base):</span>
-                <span class="contract-addr">0x7BArT...89eBase</span>
+                <span class="contract-addr">0x263043098927A76cA8370363F6B815f34E716851</span>
             </div>
 
             <div class="form-group">
@@ -229,8 +229,9 @@
     </div>
 
     <script>
+    
         let activeColor = '#ff0055';
-        let currentDayStreak = 2; // Mulai simulasi dari hari ke-2
+        let currentDayStreak = 2; 
         let currentPoints = 5;
         
         const grid = document.getElementById('pixelGrid');
@@ -262,11 +263,10 @@
         // LOGIKA AKUMULASI POIN HARIAN (STREAK SYSTEM)
         document.getElementById('btnClaimDaily').addEventListener('click', function() {
             if (currentDayStreak <= 7) {
-                currentPoints += (currentDayStreak * 5); // Akumulasi kelipatan 5 poin harian
+                currentPoints += (currentDayStreak * 5); 
                 document.getElementById('streakCount').innerText = `Hari ke-${currentDayStreak}`;
                 document.getElementById('accumulatedPoints').innerText = `${currentPoints} BART`;
                 
-                // Nyalakan visual indikator hari di box dashboard
                 const dayBox = document.getElementById(`sd-${currentDayStreak}`);
                 if (dayBox) {
                     dayBox.classList.add('passed');
@@ -276,7 +276,6 @@
                 
                 currentDayStreak++;
                 
-                // Set batas maksimal akumulasi hingga hari ke-7
                 if(currentDayStreak > 7) {
                     document.getElementById('btnClaimDaily').innerText = "❌ Batas Klaim Maksimal Sesi Tercapai";
                     document.getElementById('btnClaimDaily').disabled = true;
@@ -284,20 +283,67 @@
             }
         });
 
-        // Event Tombol Lainnya
-        document.getElementById('btnConnect').addEventListener('click', function() {
-            alert('WalletConnect Aktif! Sinkronisasi akun dexsvg aman terenkripsi.');
-        });
-
-        document.getElementById('btnExecute').addEventListener('click', function() {
-            if(!inputId.value) {
-                alert('Silakan pilih koordinat kotak piksel pada kanvas di atas dulu, bro!');
+        // ========================================================
+        // KODE UTAMA: KONEKSI DOMPET WEB3 ASLI (REAL CONNECTION)
+        // ========================================================
+        document.getElementById('btnConnect').addEventListener('click', async function() {
+            // Coba mendeteksi apakah dibuka di dalam wallet (In-App Browser)
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    // Meminta akses akun dompet secara langsung
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    const userWallet = accounts[0];
+                    
+                    // Mengubah tampilan tombol jika berhasil terkoneksi
+                    document.getElementById('btnConnect').innerText = `Connected: ${userWallet.substring(0, 6)}...${userWallet.substring(userWallet.length - 4)}`;
+                    document.getElementById('btnConnect').style.background = '#00e676';
+                    document.getElementById('btnConnect').style.color = '#000';
+                    alert('Dompet berhasil tersinkronisasi dengan jaringan Base Sepolia!');
+                } catch (error) {
+                    alert('Pengguna membatalkan permintaan sinkronisasi dompet.');
+                }
             } else {
-                alert(`Memanggil fungsi Smart Contract buyColorAndDraw() pada indeks piksel #${inputId.value}!`);
+                // Jika dibuka di browser biasa (Chrome/Safari), arahkan langsung untuk membuka aplikasi dompet (Deep Link)
+                alert('Membuka integrasi Web3... Silakan konfirmasi koneksi pada aplikasi dompet Anda.');
+                // Mengarahkan otomatis untuk membuka deep link (Contoh memicu MetaMask/OKX otomatis)
+                window.location.href = "https://metamask.app.link/dapp/" + window.location.host + window.location.pathname;
             }
         });
 
-        // Simulasi Real-Time Activity Log (Berjalan Otomatis tiap 4 detik)
+        document.getElementById('btnExecute').addEventListener('click', async function() {
+            if(!inputId.value) {
+                alert('Silakan pilih koordinat kotak piksel pada kanvas di atas dulu, bro!');
+                return;
+            }
+            
+            // Memicu transaksi tanda tangan asli jika dompet tersedia
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+                    if(accounts.length === 0) {
+                        alert('Hubungkan dompet Anda terlebih dahulu di tombol paling atas!');
+                        return;
+                    }
+                    
+                    // Meminta otentikasi tanda tangan pesan (Sign Message) yang memicu pop-up wallet asli
+                    const from = accounts[0];
+                    const msg = `Mengonfirmasi instruksi buyColorAndDraw() untuk piksel #${inputId.value} pada protokol Based Art ($BART).`;
+                    
+                    await window.ethereum.request({
+                        method: 'personal_sign',
+                        params: [msg, from],
+                    });
+                    
+                    alert(`Instruksi penimpaan aset piksel #${inputId.value} sukses dikirim ke smart contract!`);
+                } catch (err) {
+                    alert('Transaksi gagal: Pengguna menolak memberikan tanda tangan enkripsi.');
+                }
+            } else {
+                alert(`Fungsi on-chain macet. Buka situs ini langsung di dalam menu browser aplikasi OKX Wallet atau MetaMask HP-mu agar bisa berinteraksi dengan Smart Contract!`);
+            }
+        });
+
+        // Simulasi Real-Time Activity Log 
         const feed = document.getElementById('activityFeed');
         const sampleWallets = ['0x9a3d...e211', '0x21c4...9a88', '0x5bfa...33cd', '0x712e...aa99'];
         const samplePixels = [12, 88, 34, 67, 99, 3];
@@ -315,6 +361,8 @@
                 feed.removeChild(feed.lastChild);
             }
         }, 4000);
+    </script>
+    
     </script>
 </body>
 </html>

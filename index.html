@@ -60,7 +60,7 @@
         .btn:active { background: #0040cc; transform: scale(0.98); }
         .btn-secondary { background: #1c1e29; border: 1px solid #282a36; color: #fff; }
         
-        /* Verified Smart Contract Widget */
+        /* Verified Smart Contract Widget dengan Alamat Kontrak Aslimu */
         .contract-widget { background: #181922; border: 1px solid #282a36; padding: 10px 14px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 8.5pt; margin-bottom: 15px; }
         .contract-addr { color: #00e676; font-family: monospace; }
 
@@ -169,9 +169,10 @@
             <h2>⚔️ On-Chain Execution Layer</h2>
             <div class="card-desc">Kirim instruksi penimpaan kepemilikan aset piksel. Transaksi ini membutuhkan validasi tanda tangan kriptografi via wallet Anda.</div>
             
+            <!-- ALAMAT KONTRAK ASLI KELUAR DI SINI -->
             <div class="contract-widget">
                 <span>📄 Smart Contract (Base):</span>
-                <span class="contract-addr">0x263043098927A76cA8370363F6B815f34E716851</span>
+                <span class="contract-addr" title="0x263043098927A76cA8370363F6B815f34E716851">0x2630...6851</span>
             </div>
 
             <div class="form-group">
@@ -228,16 +229,17 @@
         </div>
     </div>
 
+    <!-- LOGIKA SKRIP BARU: ANTI-SPAM & 24 JAM COOLDOWN -->
     <script>
-    
         let activeColor = '#ff0055';
-        let currentDayStreak = 2; 
-        let currentPoints = 5;
+        let currentDayStreak = 1; 
+        let currentPoints = 0;
         
         const grid = document.getElementById('pixelGrid');
         const inputId = document.getElementById('pixelIdInput');
+        const dailyBtn = document.getElementById('btnClaimDaily');
 
-        // Render 100 Pixel Grid
+        // Render 100 Pixel Grid visual secara aman
         for (let i = 1; i <= 100; i++) {
             const pixel = document.createElement('div');
             pixel.className = 'pixel';
@@ -251,7 +253,7 @@
             grid.appendChild(pixel);
         }
 
-        // Color Picker Logic
+        // Handler Filter Pilihan Warna
         document.querySelectorAll('.color-dot').forEach(dot => {
             dot.addEventListener('click', function() {
                 document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
@@ -260,109 +262,99 @@
             });
         });
 
-        // LOGIKA AKUMULASI POIN HARIAN (STREAK SYSTEM)
-        document.getElementById('btnClaimDaily').addEventListener('click', function() {
+        // ========================================================
+        // LOGIKA COOLDOWN 24 JAM ASLI (FORMAT WAKTU REAL-TIME)
+        // ========================================================
+        function checkDailyCooldown() {
+            const lastClaim = localStorage.getItem('bart_last_claim_time');
+            const storedStreak = localStorage.getItem('bart_current_streak') || 1;
+            const storedPoints = localStorage.getItem('bart_total_points') || 0;
+            
+            currentDayStreak = parseInt(storedStreak);
+            currentPoints = parseInt(storedPoints);
+            
+            document.getElementById('streakCount').innerText = `Hari ke-${currentDayStreak}`;
+            document.getElementById('accumulatedPoints').innerText = `${currentPoints} BART`;
+            
+            for(let d = 1; d < currentDayStreak; d++) {
+                const passedBox = document.getElementById(`sd-${d}`);
+                if(passedBox) passedBox.classList.add('passed');
+            }
+
+            if (lastClaim) {
+                const now = new Date().getTime();
+                const timePassed = now - parseInt(lastClaim);
+                const cooldownTime = 24 * 60 * 60 * 1000; // 24 Jam dalam milidetik
+
+                if (timePassed < cooldownTime) {
+                    dailyBtn.disabled = true;
+                    startCooldownTimer(cooldownTime - timePassed);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function startCooldownTimer(duration) {
+            let timer = duration;
+            const interval = setInterval(function () {
+                const hours = Math.floor((timer % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timer % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timer % (1000 * 60)) / 1000);
+
+                // Mengunci tombol dan memicu penghitung waktu mundur mundur digital
+                dailyBtn.innerText = `⏳ Cooldown: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                dailyBtn.style.background = '#222431';
+                dailyBtn.style.color = '#71717a';
+
+                timer -= 1000;
+
+                if (timer < 0) {
+                    clearInterval(interval);
+                    dailyBtn.disabled = false;
+                    dailyBtn.innerText = "🎁 Execute Daily Accumulation";
+                    dailyBtn.style.background = '#1c1e29';
+                    dailyBtn.style.color = '#fff';
+                }
+            }, 1000);
+        }
+
+        dailyBtn.addEventListener('click', function() {
             if (currentDayStreak <= 7) {
-                currentPoints += (currentDayStreak * 5); 
-                document.getElementById('streakCount').innerText = `Hari ke-${currentDayStreak}`;
+                const rewardIncentive = currentDayStreak * 5; 
+                currentPoints += rewardIncentive;
+                
+                localStorage.setItem('bart_last_claim_time', new Date().getTime().toString());
+                localStorage.setItem('bart_total_points', currentPoints);
+                
                 document.getElementById('accumulatedPoints').innerText = `${currentPoints} BART`;
                 
-                const dayBox = document.getElementById(`sd-${currentDayStreak}`);
-                if (dayBox) {
-                    dayBox.classList.add('passed');
-                }
-                
-                alert(`Sukses mengeksekusi on-chain! Poin harian terakumulasi. Klaim hari ke-${currentDayStreak} Berhasil (+${currentDayStreak * 5} BART Poin!)`);
+                const currentBox = document.getElementById(`sd-${currentDayStreak}`);
+                if (currentBox) currentBox.classList.add('passed');
                 
                 currentDayStreak++;
+                localStorage.setItem('bart_current_streak', currentDayStreak);
                 
                 if(currentDayStreak > 7) {
-                    document.getElementById('btnClaimDaily').innerText = "❌ Batas Klaim Maksimal Sesi Tercapai";
-                    document.getElementById('btnClaimDaily').disabled = true;
+                    dailyBtn.innerText = "❌ Sesi Batas Klaim Maksimal Tercapai";
+                    dailyBtn.disabled = true;
+                    return;
                 }
+
+                document.getElementById('streakCount').innerText = `Hari ke-${currentDayStreak}`;
+                checkDailyCooldown();
             }
         });
 
+        checkDailyCooldown();
+
         // ========================================================
-        // KODE UTAMA: KONEKSI DOMPET WEB3 ASLI (REAL CONNECTION)
+        // SINKRONISASI KONEKSI WALLET (REAL-TIME TANPA ALERT POP-UP)
         // ========================================================
         document.getElementById('btnConnect').addEventListener('click', async function() {
-            // Coba mendeteksi apakah dibuka di dalam wallet (In-App Browser)
             if (typeof window.ethereum !== 'undefined') {
                 try {
-                    // Meminta akses akun dompet secara langsung
                     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
                     const userWallet = accounts[0];
                     
-                    // Mengubah tampilan tombol jika berhasil terkoneksi
-                    document.getElementById('btnConnect').innerText = `Connected: ${userWallet.substring(0, 6)}...${userWallet.substring(userWallet.length - 4)}`;
-                    document.getElementById('btnConnect').style.background = '#00e676';
-                    document.getElementById('btnConnect').style.color = '#000';
-                    alert('Dompet berhasil tersinkronisasi dengan jaringan Base Sepolia!');
-                } catch (error) {
-                    alert('Pengguna membatalkan permintaan sinkronisasi dompet.');
-                }
-            } else {
-                // Jika dibuka di browser biasa (Chrome/Safari), arahkan langsung untuk membuka aplikasi dompet (Deep Link)
-                alert('Membuka integrasi Web3... Silakan konfirmasi koneksi pada aplikasi dompet Anda.');
-                // Mengarahkan otomatis untuk membuka deep link (Contoh memicu MetaMask/OKX otomatis)
-                window.location.href = "https://metamask.app.link/dapp/" + window.location.host + window.location.pathname;
-            }
-        });
-
-        document.getElementById('btnExecute').addEventListener('click', async function() {
-            if(!inputId.value) {
-                alert('Silakan pilih koordinat kotak piksel pada kanvas di atas dulu, bro!');
-                return;
-            }
-            
-            // Memicu transaksi tanda tangan asli jika dompet tersedia
-            if (typeof window.ethereum !== 'undefined') {
-                try {
-                    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-                    if(accounts.length === 0) {
-                        alert('Hubungkan dompet Anda terlebih dahulu di tombol paling atas!');
-                        return;
-                    }
-                    
-                    // Meminta otentikasi tanda tangan pesan (Sign Message) yang memicu pop-up wallet asli
-                    const from = accounts[0];
-                    const msg = `Mengonfirmasi instruksi buyColorAndDraw() untuk piksel #${inputId.value} pada protokol Based Art ($BART).`;
-                    
-                    await window.ethereum.request({
-                        method: 'personal_sign',
-                        params: [msg, from],
-                    });
-                    
-                    alert(`Instruksi penimpaan aset piksel #${inputId.value} sukses dikirim ke smart contract!`);
-                } catch (err) {
-                    alert('Transaksi gagal: Pengguna menolak memberikan tanda tangan enkripsi.');
-                }
-            } else {
-                alert(`Fungsi on-chain macet. Buka situs ini langsung di dalam menu browser aplikasi OKX Wallet atau MetaMask HP-mu agar bisa berinteraksi dengan Smart Contract!`);
-            }
-        });
-
-        // Simulasi Real-Time Activity Log 
-        const feed = document.getElementById('activityFeed');
-        const sampleWallets = ['0x9a3d...e211', '0x21c4...9a88', '0x5bfa...33cd', '0x712e...aa99'];
-        const samplePixels = [12, 88, 34, 67, 99, 3];
-        
-        setInterval(() => {
-            const wallet = sampleWallets[Math.floor(Math.random() * sampleWallets.length)];
-            const pixel = samplePixels[Math.floor(Math.random() * samplePixels.length)];
-            
-            const item = document.createElement('div');
-            item.className = 'activity-item';
-            item.innerHTML = `<span class="activity-user">${wallet}</span><span class="activity-action">Colored Pixel #${pixel} 🟩</span>`;
-            
-            feed.insertBefore(item, feed.firstChild);
-            if(feed.children.length > 3) {
-                feed.removeChild(feed.lastChild);
-            }
-        }, 4000);
-    </script>
-    
-    </script>
-</body>
-</html>
+                    document.getElem

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Based Art ($BART) | Professional On-Chain Canvas</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #0d0e12; color: #f3f4f6; padding: 15px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        
+        /* Premium Header styling */
+        .header { text-align: center; padding: 35px 15px; background: linear-gradient(135deg, #0052ff 0%, #002575 100%); border-radius: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        .header h1 { font-size: 26pt; font-weight: 900; letter-spacing: -1px; margin-bottom: 5px; }
+        .header p { font-size: 11pt; color: #93c5fd; font-weight: 300; }
+        .badge { display: inline-block; background: #00e676; color: #000; padding: 4px 12px; font-size: 8pt; font-weight: bold; border-radius: 20px; margin-top: 12px; letter-spacing: 0.5px; }
+        
+        /* Dashboard Live Stats */
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+        .stat-box { background: #181922; border: 1px solid #282a36; padding: 12px; border-radius: 12px; text-align: center; }
+        .stat-val { font-size: 14pt; font-weight: bold; color: #0052ff; }
+        .stat-lbl { font-size: 8pt; color: #71717a; text-transform: uppercase; margin-top: 2px; }
+
+        .card { background: #13141c; border: 1px solid #222431; border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+        .card h2 { font-size: 13pt; margin-bottom: 12px; color: #fff; display: flex; align-items: center; gap: 8px; }
+        .card-desc { font-size: 9.5pt; color: #9ca3af; margin-bottom: 15px; line-height: 1.4; }
+        
+        /* Color Palette styling */
+        .palette-container { display: flex; gap: 8px; margin-bottom: 15px; justify-content: center; background: #1c1e29; padding: 10px; border-radius: 8px; }
+        .color-dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+        .color-dot:hover { transform: scale(1.15); }
+        .color-dot.selected { border-color: #fff; transform: scale(1.1); }
+
+        /* Style Papan Kanvas Gambar */
+        .canvas-container { display: flex; justify-content: center; margin: 10px 0; background: #1c1e29; padding: 12px; border-radius: 12px; border: 1px solid #282a36; }
+        .pixel-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; width: 100%; max-width: 320px; aspect-ratio: 1; }
+        .pixel { background: #282a36; border-radius: 3px; aspect-ratio: 1; cursor: pointer; transition: all 0.15s ease; }
+        .pixel:hover { background: #0052ff; box-shadow: 0 0 8px #0052ff; }
+        .pixel.active { background: #ff0055; box-shadow: 0 0 10px #ff0055; border: 1px solid #fff; }
+
+        /* Form Inputs & Buttons */
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 9pt; color: #9ca3af; margin-bottom: 6px; font-weight: 500; }
+        .form-group input { width: 100%; background: #1c1e29; border: 1px solid #282a36; border-radius: 10px; padding: 14px; color: #fff; font-size: 11pt; transition: 0.2s; }
+        .form-group input:focus { border-color: #0052ff; outline: none; }
+        
+        .btn { display: block; width: 100%; background: #0052ff; color: white; border: none; border-radius: 10px; padding: 15px; font-size: 11pt; font-weight: 600; text-align: center; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 12px rgba(0,82,255,0.15); }
+        .btn:active { background: #0040cc; transform: scale(0.98); }
+        .btn-secondary { background: #1c1e29; border: 1px solid #282a36; color: #fff; }
+        .btn-secondary:active { background: #13141c; }
+        
+        /* Leaderboard styling */
+        .leaderboard-list { display: flex; flex-direction: column; gap: 8px; }
+        .leaderboard-item { display: flex; justify-content: space-between; background: #1c1e29; padding: 10px 14px; border-radius: 8px; font-size: 10pt; }
+        .rank-name { display: flex; gap: 10px; color: #e5e7eb; }
+        .rank-num { color: #0052ff; font-weight: bold; }
+        .rank-pts { color: #00e676; font-weight: bold; }
+
+        /* Roadmap styling */
+        .roadmap-item { border-left: 3px solid #0052ff; padding-left: 15px; margin-bottom: 15px; position: relative; }
+        .roadmap-phase { font-size: 8.5pt; font-weight: 700; color: #0052ff; text-transform: uppercase; }
+        .roadmap-title { font-size: 11pt; font-weight: 600; color: #fff; margin: 2px 0; }
+        .roadmap-desc { font-size: 9pt; color: #9ca3af; line-height: 1.4; }
+        
+        .footer { text-align: center; font-size: 8pt; color: #4b5563; margin-top: 40px; padding: 20px 0; border-top: 1px solid #1c1e29; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <!-- HEADER UTAMA -->
+        <div class="header">
+            <h1>Based Art ($BART)</h1>
+            <p>Decentralized Real-Time Pixel War Protocol</p>
+            <div class="badge">📡 BASE SEPOLIA NODE ACTIVE</div>
+        </div>
+
+        <!-- DASHBOARD LIVE STATS -->
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-val">4,821 / 10,000</div>
+                <div class="stat-lbl">Pixels Claimed</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-val">2.4M $BART</div>
+                <div class="stat-lbl">Airdrop Pool Left</div>
+            </div>
+        </div>
+
+        <!-- AUTHENTICATION CARD -->
+        <div class="card" style="text-align: center;">
+            <button class="btn" onclick="alert('WalletConnect terpicu! Membuka integrasi enkripsi OKX / MetaMask...')">🔌 Connect Web3 Wallet</button>
+            <p style="font-size: 8.5pt; color: #6b7280; margin-top: 10px;">Menggunakan protokol aman standar ERC-20 & ERC-721</p>
+        </div>
+
+        <!-- DAILY LOYALTY PROTOCOL -->
+        <div class="card">
+            <h2>📆 Daily Incentive System</h2>
+            <div class="card-desc">Sistem distribusi insentif harian terenkripsi. Dapatkan alokasi gas coretan gratis dan amankan klaim instan sebesar <b>5 BART Loyalty Points</b> guna melipatgandakan bobot alokasi airdrop Anda.</div>
+            <button class="btn btn-secondary" onclick="alert('Memanggil fungsi claimDailyFreeStroke()... Harap tunggu transaksi selesai.')">🎁 Claim Daily Free Stroke</button>
+        </div>
+
+        <!-- INTERACTIVE LIVE CANVAS VIEW -->
+        <div class="card">
+            <h2>🎨 Real-Time Pixel Grid Canvas (10x10 Matrix)</h2>
+            <div class="card-desc">Peta matriks visual kanvas global. Klik pada koordinat piksel pilihan Anda untuk membaca data registrasi indeks alamat dompet pintar secara langsung.</div>
+            
+            <!-- Palet Warna yang Mirip Aplikasi Asli -->
+            <div class="palette-container">
+                <div class="color-dot selected" style="background: #ff0055;" onclick="selectColor(this, '#ff0055')"></div>
+                <div class="color-dot" style="background: #0052ff;" onclick="selectColor(this, '#0052ff')"></div>
+                <div class="color-dot" style="background: #00e676;" onclick="selectColor(this, '#00e676')"></div>
+                <div class="color-dot" style="background: #ffeb3b;" onclick="selectColor(this, '#ffeb3b')"></div>
+                <div class="color-dot" style="background: #ffffff;" onclick="selectColor(this, '#ffffff')"></div>
+            </div>
+
+            <div class="canvas-container">
+                <div class="pixel-grid">
+                    <script>
+                        let activeColor = '#ff0055';
+                        for(let i=1; i<=100; i++) {
+                            document.write(`<div class="pixel" id="p-${i}" onclick="selectPixel(${i})"></div>`);
+                        }
+                        function selectColor(elm, color) {
+                            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+                            elm.classList.add('selected');
+                            activeColor = color;
+                        }
+                        function selectPixel(id) {
+                            document.querySelectorAll('.pixel').forEach(p => p.classList.remove('active'));
+                            let target = document.getElementById('p-'+id);
+                            target.classList.add('active');
+                            target.style.backgroundColor = activeColor;
+                            document.getElementById('pixelIdInput').value = id;
+                        }
+                    </script>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRANSACTION GATEWAY FORM -->
+        <div class="card">
+            <h2>⚔️ On-Chain Execution Layer</h2>
+            <div class="card-desc">Kirim instruksi penimpaan kepemilikan aset piksel. Transaksi ini membutuhkan validasi tanda tangan kriptografi via wallet Anda.</div>
+            <div class="form-group">
+                <label>Target Koordinat Indeks (Pixel ID)</label>
+                <input type="number" id="pixelIdInput" placeholder="Pilih koordinat matriks di atas" readonly>
+            </div>
+            <div class="form-group">
+                <label>Penawaran Nilai Gas Warna (Price in Wei)</label>
+                <input type="number" placeholder="Contoh: 100000000000000">
+                <small style="font-size: 8pt; color: #6b7280; display: block; margin-top: 5px;">*Wajib lebih tinggi dari penawaran kepemilikan pemilik piksel sebelumnya.</small>
+            </div>
+            <button class="btn" onclick="alert('Memetakan fungsi buyColorAndDraw(). Sending cryptographic load to wallet...')">⚡ Execute Stroke & Mint Territory</button>
+        </div>
+
+        <!-- LEADERBOARD FACTION -->
+        <div class="card">
+            <h2>🏆 Top Canvas Conquerors</h2>
+            <div class="card-desc">Papan peringkat real-time yang melacak alamat dompet dengan akumulasi penguasaan piksel terluas di jaringan Base.</div>
+            <div class="leaderboard-list">
+                <div class="leaderboard-item">
+                    <div class="rank-name"><span class="rank-num">#1</span> 0x8b3f...e92a</div>
+                    <div class="rank-pts">142 Pixels</div>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="rank-name"><span class="rank-num">#2</span> 0x3c2a...4a11</div>
+                    <div class="rank-pts">98 Pixels</div>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="rank-name"><span class="rank-num">#3</span> 0x5e11...99bc</div>
+                    <div class="rank-pts">64 Pixels</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HIGH-LEVEL PROJECT ROADMAP -->
+        <div class="card">
+            <h2>🗺️ Protocol Roadmap & Milestones</h2>
+            <div class="roadmap-item">
+                <div class="roadmap-phase">Phase 1</div>
+                <div class="roadmap-title">Protocol Inception & Testnet Alpha (Q2 2026)</div>
+                <div class="roadmap-desc">Penerapan arsitektur dasar smart contract pada Base Sepolia Node. Implementasi sistem insentif loyalitas harian otomatis bagi pencoba awal dApp.</div>
+            </div>
+            <div class="roadmap-item">
+                <div class="roadmap-phase">Phase 2</div>
+                <div class="roadmap-title">Mainnet Canvas War & Collaborative NFT (Q3 2026)</div>
+                <div class="roadmap-desc">Transisi ke jaringan utama Base Mainnet. Pembukaan fitur aliansi komunitas dan pencetakan hasil akhir kanvas global sebagai aset Masterpiece NFT terkompresi.</div>
+            </div>
+            <div class="roadmap-item">
+                <div class="roadmap-phase">Phase 3</div>
+                <div class="roadmap-title">Token Generation Event & $BART Airdrop (Q4 2026)</div>
+                <div class="roadmap-desc">Audit keamanan token dan pengambilan data snapshot point final. Peluncuran likuiditas bursa token $BART serta distribusi airdrop massal proporsional kepada partisipan aktif.</div>
+            </div>
+        </div>
+
+        <!-- FOOTER LEGALITY -->
+        <div class="footer">
+            <p>&copy; 2026 Based Art ($BART) Protocol. Formulated via Decentralized Full-Stack Mobile System.</p>
+        </div>
+    </div>
+</body>
+  </html>

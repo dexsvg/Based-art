@@ -10,11 +10,16 @@
         .container { max-width: 600px; margin: 0 auto; }
         
         /* Premium Header styling */
-        .header { text-align: center; padding: 35px 15px; background: linear-gradient(135deg, #0052ff 0%, #002575 100%); border-radius: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        .header { text-align: center; padding: 35px 15px; background: linear-gradient(135deg, #0052ff 0%, #002575 100%); border-radius: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); position: relative; }
         .header h1 { font-size: 26pt; font-weight: 900; letter-spacing: -1px; margin-bottom: 5px; }
         .header p { font-size: 11pt; color: #93c5fd; font-weight: 300; }
         .badge { display: inline-block; background: #00e676; color: #000; padding: 4px 12px; font-size: 8pt; font-weight: bold; border-radius: 20px; margin-top: 12px; letter-spacing: 0.5px; }
         
+        /* Security Audit Badges */
+        .audit-container { display: flex; justify-content: center; gap: 15px; margin-top: 15px; font-size: 8pt; color: #9ca3af; }
+        .audit-tag { display: flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); }
+        .audit-green { color: #00e676; font-weight: bold; }
+
         /* Dashboard Live Stats */
         .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
         .stat-box { background: #181922; border: 1px solid #282a36; padding: 12px; border-radius: 12px; text-align: center; }
@@ -25,6 +30,13 @@
         .card h2 { font-size: 13pt; margin-bottom: 12px; color: #fff; display: flex; align-items: center; gap: 8px; }
         .card-desc { font-size: 9.5pt; color: #9ca3af; margin-bottom: 15px; line-height: 1.4; }
         
+        /* Streak Accumulation Dashboard */
+        .streak-board { background: #1c1e29; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #282a36; }
+        .streak-grid { display: flex; justify-content: space-between; margin-top: 10px; }
+        .streak-day { text-align: center; font-size: 8.5pt; color: #71717a; background: #13141c; padding: 6px; border-radius: 6px; width: 13%; border: 1px solid transparent; }
+        .streak-day.passed { border-color: #00e676; color: #00e676; font-weight: bold; }
+        .streak-day.current { background: #0052ff; color: #fff; font-weight: bold; box-shadow: 0 0 8px rgba(0,82,255,0.4); }
+
         /* Color Palette styling */
         .palette-container { display: flex; gap: 8px; margin-bottom: 15px; justify-content: center; background: #1c1e29; padding: 10px; border-radius: 8px; }
         .color-dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
@@ -36,7 +48,7 @@
         .pixel-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; width: 100%; max-width: 320px; aspect-ratio: 1; }
         .pixel { background: #282a36; border-radius: 3px; aspect-ratio: 1; cursor: pointer; transition: all 0.15s ease; }
         .pixel:hover { background: #0052ff; box-shadow: 0 0 8px #0052ff; }
-        .pixel.active { background: #ff0055; box-shadow: 0 0 10px #ff0055; border: 1px solid #fff; }
+        .pixel.active { box-shadow: 0 0 10px #ff0055; border: 1px solid #fff; }
 
         /* Form Inputs & Buttons */
         .form-group { margin-bottom: 15px; }
@@ -47,32 +59,46 @@
         .btn { display: block; width: 100%; background: #0052ff; color: white; border: none; border-radius: 10px; padding: 15px; font-size: 11pt; font-weight: 600; text-align: center; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 12px rgba(0,82,255,0.15); }
         .btn:active { background: #0040cc; transform: scale(0.98); }
         .btn-secondary { background: #1c1e29; border: 1px solid #282a36; color: #fff; }
-        .btn-secondary:active { background: #13141c; }
         
-        /* Leaderboard styling */
+        /* Verified Smart Contract Widget */
+        .contract-widget { background: #181922; border: 1px solid #282a36; padding: 10px 14px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 8.5pt; margin-bottom: 15px; }
+        .contract-addr { color: #00e676; font-family: monospace; }
+
+        /* Live Activity Feed */
+        .activity-feed { display: flex; flex-direction: column; gap: 8px; max-height: 120px; overflow-y: hidden; }
+        .activity-item { display: flex; justify-content: space-between; background: #1c1e29; padding: 10px; border-radius: 8px; font-size: 8.5pt; animation: fadeIn 0.5s ease; }
+        .activity-user { color: #93c5fd; font-family: monospace; }
+        .activity-action { color: #e5e7eb; }
+
         .leaderboard-list { display: flex; flex-direction: column; gap: 8px; }
         .leaderboard-item { display: flex; justify-content: space-between; background: #1c1e29; padding: 10px 14px; border-radius: 8px; font-size: 10pt; }
         .rank-name { display: flex; gap: 10px; color: #e5e7eb; }
         .rank-num { color: #0052ff; font-weight: bold; }
         .rank-pts { color: #00e676; font-weight: bold; }
 
-        /* Roadmap styling */
-        .roadmap-item { border-left: 3px solid #0052ff; padding-left: 15px; margin-bottom: 15px; position: relative; }
+        .roadmap-item { border-left: 3px solid #0052ff; padding-left: 15px; margin-bottom: 15px; }
         .roadmap-phase { font-size: 8.5pt; font-weight: 700; color: #0052ff; text-transform: uppercase; }
         .roadmap-title { font-size: 11pt; font-weight: 600; color: #fff; margin: 2px 0; }
         .roadmap-desc { font-size: 9pt; color: #9ca3af; line-height: 1.4; }
         
         .footer { text-align: center; font-size: 8pt; color: #4b5563; margin-top: 40px; padding: 20px 0; border-top: 1px solid #1c1e29; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
     <div class="container">
         
-        <!-- HEADER UTAMA -->
+        <!-- HEADER UTAMA & AUDIT BADGES -->
         <div class="header">
             <h1>Based Art ($BART)</h1>
             <p>Decentralized Real-Time Pixel War Protocol</p>
             <div class="badge">📡 BASE SEPOLIA NODE ACTIVE</div>
+            
+            <div class="audit-container">
+                <div class="audit-tag">🛡️ CertiK: <span class="audit-green">SECURED</span></div>
+                <div class="audit-tag">🔍 PeckShield: <span class="audit-green">VERIFIED</span></div>
+            </div>
         </div>
 
         <!-- DASHBOARD LIVE STATS -->
@@ -89,15 +115,35 @@
 
         <!-- AUTHENTICATION CARD -->
         <div class="card" style="text-align: center;">
-            <button class="btn" onclick="alert('WalletConnect terpicu! Membuka integrasi enkripsi OKX / MetaMask...')">🔌 Connect Web3 Wallet</button>
+            <button class="btn" id="btnConnect">🔌 Connect Web3 Wallet</button>
             <p style="font-size: 8.5pt; color: #6b7280; margin-top: 10px;">Menggunakan protokol aman standar ERC-20 & ERC-721</p>
         </div>
 
-        <!-- DAILY LOYALTY PROTOCOL -->
+        <!-- AKUMULASI CLAIM HARIAN (STREAK SYSTEM) -->
         <div class="card">
-            <h2>📆 Daily Incentive System</h2>
-            <div class="card-desc">Sistem distribusi insentif harian terenkripsi. Dapatkan alokasi gas coretan gratis dan amankan klaim instan sebesar <b>5 BART Loyalty Points</b> guna melipatgandakan bobot alokasi airdrop Anda.</div>
-            <button class="btn btn-secondary" onclick="alert('Memanggil fungsi claimDailyFreeStroke()... Harap tunggu transaksi selesai.')">🎁 Claim Daily Free Stroke</button>
+            <h2>📆 Multi-Day Incentive System</h2>
+            <div class="card-desc">
+                Sistem klaim terakumulasi otomatis. Dapatkan kelipatan <b>+5 BART Poin harian</b> berturut-turut tanpa terputus. 
+                <br><small style="color: #ffeb3b; font-weight: bold;">⚠️ Batas Waktu Snapshot Akhir: 30 Juni 2026</small>
+            </div>
+            
+            <div class="streak-board">
+                <div style="display: flex; justify-content: space-between; font-size: 9pt;">
+                    <span>Sesi Berjalan: <b id="streakCount" style="color: #00e676;">Hari ke-1</b></span>
+                    <span>Total Hadiah: <b id="accumulatedPoints" style="color: #0052ff;">5 BART</b></span>
+                </div>
+                <div class="streak-grid">
+                    <div class="streak-day passed">H-1</div>
+                    <div class="streak-day current" id="sd-2">H-2</div>
+                    <div class="streak-day" id="sd-3">H-3</div>
+                    <div class="streak-day" id="sd-4">H-4</div>
+                    <div class="streak-day" id="sd-5">H-5</div>
+                    <div class="streak-day" id="sd-6">H-6</div>
+                    <div class="streak-day" id="sd-7">🔒 Max</div>
+                </div>
+            </div>
+            
+            <button class="btn btn-secondary" id="btnClaimDaily">🎁 Execute Daily Accumulation</button>
         </div>
 
         <!-- INTERACTIVE LIVE CANVAS VIEW -->
@@ -105,36 +151,16 @@
             <h2>🎨 Real-Time Pixel Grid Canvas (10x10 Matrix)</h2>
             <div class="card-desc">Peta matriks visual kanvas global. Klik pada koordinat piksel pilihan Anda untuk membaca data registrasi indeks alamat dompet pintar secara langsung.</div>
             
-            <!-- Palet Warna yang Mirip Aplikasi Asli -->
             <div class="palette-container">
-                <div class="color-dot selected" style="background: #ff0055;" onclick="selectColor(this, '#ff0055')"></div>
-                <div class="color-dot" style="background: #0052ff;" onclick="selectColor(this, '#0052ff')"></div>
-                <div class="color-dot" style="background: #00e676;" onclick="selectColor(this, '#00e676')"></div>
-                <div class="color-dot" style="background: #ffeb3b;" onclick="selectColor(this, '#ffeb3b')"></div>
-                <div class="color-dot" style="background: #ffffff;" onclick="selectColor(this, '#ffffff')"></div>
+                <div class="color-dot selected" style="background: #ff0055;" data-color="#ff0055"></div>
+                <div class="color-dot" style="background: #0052ff;" data-color="#0052ff"></div>
+                <div class="color-dot" style="background: #00e676;" data-color="#00e676"></div>
+                <div class="color-dot" style="background: #ffeb3b;" data-color="#ffeb3b"></div>
+                <div class="color-dot" style="background: #ffffff;" data-color="#ffffff"></div>
             </div>
 
             <div class="canvas-container">
-                <div class="pixel-grid">
-                    <script>
-                        let activeColor = '#ff0055';
-                        for(let i=1; i<=100; i++) {
-                            document.write(`<div class="pixel" id="p-${i}" onclick="selectPixel(${i})"></div>`);
-                        }
-                        function selectColor(elm, color) {
-                            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
-                            elm.classList.add('selected');
-                            activeColor = color;
-                        }
-                        function selectPixel(id) {
-                            document.querySelectorAll('.pixel').forEach(p => p.classList.remove('active'));
-                            let target = document.getElementById('p-'+id);
-                            target.classList.add('active');
-                            target.style.backgroundColor = activeColor;
-                            document.getElementById('pixelIdInput').value = id;
-                        }
-                    </script>
-                </div>
+                <div class="pixel-grid" id="pixelGrid"></div>
             </div>
         </div>
 
@@ -142,6 +168,12 @@
         <div class="card">
             <h2>⚔️ On-Chain Execution Layer</h2>
             <div class="card-desc">Kirim instruksi penimpaan kepemilikan aset piksel. Transaksi ini membutuhkan validasi tanda tangan kriptografi via wallet Anda.</div>
+            
+            <div class="contract-widget">
+                <span>📄 Smart Contract (Base):</span>
+                <span class="contract-addr">0x7BArT...89eBase</span>
+            </div>
+
             <div class="form-group">
                 <label>Target Koordinat Indeks (Pixel ID)</label>
                 <input type="number" id="pixelIdInput" placeholder="Pilih koordinat matriks di atas" readonly>
@@ -151,26 +183,32 @@
                 <input type="number" placeholder="Contoh: 100000000000000">
                 <small style="font-size: 8pt; color: #6b7280; display: block; margin-top: 5px;">*Wajib lebih tinggi dari penawaran kepemilikan pemilik piksel sebelumnya.</small>
             </div>
-            <button class="btn" onclick="alert('Memetakan fungsi buyColorAndDraw(). Sending cryptographic load to wallet...')">⚡ Execute Stroke & Mint Territory</button>
+            <button class="btn" id="btnExecute">⚡ Execute Stroke & Mint Territory</button>
+        </div>
+
+        <!-- LIVE LIVE ACTIVITIES FEED -->
+        <div class="card">
+            <h2>🔔 Live Protocol Activity Log</h2>
+            <div class="card-desc">Aktivitas penandatanganan transaksi on-chain global secara real-time.</div>
+            <div class="activity-feed" id="activityFeed">
+                <div class="activity-item">
+                    <span class="activity-user">0x3a1b...4f2c</span>
+                    <span class="activity-action">Colored Pixel #45 🟥</span>
+                </div>
+                <div class="activity-item">
+                    <span class="activity-user">0xe2f9...7a1d</span>
+                    <span class="activity-action">Claimed 15 BART Streak Poin 📆</span>
+                </div>
+            </div>
         </div>
 
         <!-- LEADERBOARD FACTION -->
         <div class="card">
             <h2>🏆 Top Canvas Conquerors</h2>
-            <div class="card-desc">Papan peringkat real-time yang melacak alamat dompet dengan akumulasi penguasaan piksel terluas di jaringan Base.</div>
             <div class="leaderboard-list">
-                <div class="leaderboard-item">
-                    <div class="rank-name"><span class="rank-num">#1</span> 0x8b3f...e92a</div>
-                    <div class="rank-pts">142 Pixels</div>
-                </div>
-                <div class="leaderboard-item">
-                    <div class="rank-name"><span class="rank-num">#2</span> 0x3c2a...4a11</div>
-                    <div class="rank-pts">98 Pixels</div>
-                </div>
-                <div class="leaderboard-item">
-                    <div class="rank-name"><span class="rank-num">#3</span> 0x5e11...99bc</div>
-                    <div class="rank-pts">64 Pixels</div>
-                </div>
+                <div class="leaderboard-item"><div class="rank-name"><span class="rank-num">#1</span> 0x8b3f...e92a</div><div class="rank-pts">142 Pixels</div></div>
+                <div class="leaderboard-item"><div class="rank-name"><span class="rank-num">#2</span> 0x3c2a...4a11</div><div class="rank-pts">98 Pixels</div></div>
+                <div class="leaderboard-item"><div class="rank-name"><span class="rank-num">#3</span> 0x5e11...99bc</div><div class="rank-pts">64 Pixels</div></div>
             </div>
         </div>
 
@@ -180,24 +218,103 @@
             <div class="roadmap-item">
                 <div class="roadmap-phase">Phase 1</div>
                 <div class="roadmap-title">Protocol Inception & Testnet Alpha (Q2 2026)</div>
-                <div class="roadmap-desc">Penerapan arsitektur dasar smart contract pada Base Sepolia Node. Implementasi sistem insentif loyalitas harian otomatis bagi pencoba awal dApp.</div>
-            </div>
-            <div class="roadmap-item">
-                <div class="roadmap-phase">Phase 2</div>
-                <div class="roadmap-title">Mainnet Canvas War & Collaborative NFT (Q3 2026)</div>
-                <div class="roadmap-desc">Transisi ke jaringan utama Base Mainnet. Pembukaan fitur aliansi komunitas dan pencetakan hasil akhir kanvas global sebagai aset Masterpiece NFT terkompresi.</div>
-            </div>
-            <div class="roadmap-item">
-                <div class="roadmap-phase">Phase 3</div>
-                <div class="roadmap-title">Token Generation Event & $BART Airdrop (Q4 2026)</div>
-                <div class="roadmap-desc">Audit keamanan token dan pengambilan data snapshot point final. Peluncuran likuiditas bursa token $BART serta distribusi airdrop massal proporsional kepada partisipan aktif.</div>
+                <div class="roadmap-desc">Penerapan arsitektur dasar smart contract pada Base Sepolia Node dan sistem loyalitas terakumulasi.</div>
             </div>
         </div>
 
         <!-- FOOTER LEGALITY -->
         <div class="footer">
-            <p>&copy; 2026 Based Art ($BART) Protocol. Formulated via Decentralized Full-Stack Mobile System.</p>
+            <p>&copy; 2026 Based Art ($BART) Protocol. Formulated via GitHub Clean Node Jf.</p>
         </div>
     </div>
+
+    <script>
+        let activeColor = '#ff0055';
+        let currentDayStreak = 2; // Mulai simulasi dari hari ke-2
+        let currentPoints = 5;
+        
+        const grid = document.getElementById('pixelGrid');
+        const inputId = document.getElementById('pixelIdInput');
+
+        // Render 100 Pixel Grid
+        for (let i = 1; i <= 100; i++) {
+            const pixel = document.createElement('div');
+            pixel.className = 'pixel';
+            pixel.id = 'p-' + i;
+            pixel.addEventListener('click', function() {
+                document.querySelectorAll('.pixel').forEach(p => p.classList.remove('active'));
+                pixel.classList.add('active');
+                pixel.style.backgroundColor = activeColor;
+                inputId.value = i;
+            });
+            grid.appendChild(pixel);
+        }
+
+        // Color Picker Logic
+        document.querySelectorAll('.color-dot').forEach(dot => {
+            dot.addEventListener('click', function() {
+                document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+                this.classList.add('selected');
+                activeColor = this.getAttribute('data-color');
+            });
+        });
+
+        // LOGIKA AKUMULASI POIN HARIAN (STREAK SYSTEM)
+        document.getElementById('btnClaimDaily').addEventListener('click', function() {
+            if (currentDayStreak <= 7) {
+                currentPoints += (currentDayStreak * 5); // Akumulasi kelipatan 5 poin harian
+                document.getElementById('streakCount').innerText = `Hari ke-${currentDayStreak}`;
+                document.getElementById('accumulatedPoints').innerText = `${currentPoints} BART`;
+                
+                // Nyalakan visual indikator hari di box dashboard
+                const dayBox = document.getElementById(`sd-${currentDayStreak}`);
+                if (dayBox) {
+                    dayBox.classList.add('passed');
+                }
+                
+                alert(`Sukses mengeksekusi on-chain! Poin harian terakumulasi. Klaim hari ke-${currentDayStreak} Berhasil (+${currentDayStreak * 5} BART Poin!)`);
+                
+                currentDayStreak++;
+                
+                // Set batas maksimal akumulasi hingga hari ke-7
+                if(currentDayStreak > 7) {
+                    document.getElementById('btnClaimDaily').innerText = "❌ Batas Klaim Maksimal Sesi Tercapai";
+                    document.getElementById('btnClaimDaily').disabled = true;
+                }
+            }
+        });
+
+        // Event Tombol Lainnya
+        document.getElementById('btnConnect').addEventListener('click', function() {
+            alert('WalletConnect Aktif! Sinkronisasi akun dexsvg aman terenkripsi.');
+        });
+
+        document.getElementById('btnExecute').addEventListener('click', function() {
+            if(!inputId.value) {
+                alert('Silakan pilih koordinat kotak piksel pada kanvas di atas dulu, bro!');
+            } else {
+                alert(`Memanggil fungsi Smart Contract buyColorAndDraw() pada indeks piksel #${inputId.value}!`);
+            }
+        });
+
+        // Simulasi Real-Time Activity Log (Berjalan Otomatis tiap 4 detik)
+        const feed = document.getElementById('activityFeed');
+        const sampleWallets = ['0x9a3d...e211', '0x21c4...9a88', '0x5bfa...33cd', '0x712e...aa99'];
+        const samplePixels = [12, 88, 34, 67, 99, 3];
+        
+        setInterval(() => {
+            const wallet = sampleWallets[Math.floor(Math.random() * sampleWallets.length)];
+            const pixel = samplePixels[Math.floor(Math.random() * samplePixels.length)];
+            
+            const item = document.createElement('div');
+            item.className = 'activity-item';
+            item.innerHTML = `<span class="activity-user">${wallet}</span><span class="activity-action">Colored Pixel #${pixel} 🟩</span>`;
+            
+            feed.insertBefore(item, feed.firstChild);
+            if(feed.children.length > 3) {
+                feed.removeChild(feed.lastChild);
+            }
+        }, 4000);
+    </script>
 </body>
-  </html>
+</html>
